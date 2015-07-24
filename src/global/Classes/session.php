@@ -1,0 +1,5 @@
+<?php
+public class session() {
+  
+}
+?>
