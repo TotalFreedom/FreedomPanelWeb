@@ -2,6 +2,7 @@
 /**
 * MySQLi Object - Need to make interface for this, and other db engines
 * Also, need to make this prepared statements at some point.
+* Written by Matt Kent (@Kent55) adapted for FreedomPanelWeb (@TotalFreedom) by Charles Gillham (@TheCJGCJG)
 */
 class sqlInt {
 
@@ -169,11 +170,16 @@ class sqlInt {
     }
 
 
+		/**
+		* End of MySQLI Driver
+		*
+		* Start of pre-defined queries. Queries are all performed by calling one of these functions as all data can easily be sanitized from here.
+		*/
 
 
-		// Predefine Queries here - I would rather have it all done here
-
-
+		/**
+		* Check if a user exists in the database, returns either True or False.
+		*/
 		public function query_userExists($username) {
 			$username = $this->sanitizeData($username);
 			$result = $this->executeQuery("SELECT id FROM users WHERE username='" . $username . "';");
@@ -184,6 +190,14 @@ class sqlInt {
 				return false;
 			}
 		}
+
+		/**
+		* Retrieves all userdata associated with whichever colimn the query is being requested for. For example
+		* if column=username. This will then return all cells associated with this username, and shall possibly
+		* In the future be adapted to return user permissions etc. also.
+		* Returns either the results (in an associative array), or returns false if the specified data cannot
+		* be found in the column
+		*/
 
 		public function query_getUserData($options) {
 			/*
@@ -204,6 +218,9 @@ class sqlInt {
 
 		}
 
+		/*
+		* Inserts a user into the database when given their username and password in the options array.
+		*/
 
 		public function query_insertUser($options) {
 			/*
@@ -222,6 +239,12 @@ class sqlInt {
 			}
 		}
 
+		/*
+		* Deletes a user from the database with the given username.
+		* Returns either true or false on Success/Failiure of the query. No check is made as to
+		* the status of the data in the table.
+		*/
+
 		public function query_deleteUser($options) {
 			/*
 			Options array will contain the following as keys
@@ -235,6 +258,12 @@ class sqlInt {
 				return false;
 			}
 		}
+
+		/*
+		* When a username is given, this query will change the password value associated with said
+		* username. This function returns true or false on success or failiure of the query
+		* No check is made as to the success or failiure of the process.
+		*/
 
 		public function query_changePassword($options) {
 			/*
@@ -253,6 +282,13 @@ class sqlInt {
 			}
 		}
 
+
+		/*
+		* Queries the users table to find the user ID of a particular user
+		* Returns either true or false as to whether or not an ID is found for said
+		* username in the database.
+		*/
+
 		public function query_getUserID($options) {
 			/*
 			Options array will contain the following as keys
@@ -262,9 +298,18 @@ class sqlInt {
 			$username = $this->sanitizeData($options['username']);
 
 			$this->executeQuery("SELECT id FROM users WHERE username='" . $username . "';");
-			return $this->getRows();
+			if (!$this->getRows()) {
+				return false;
+			} else {
+				return $this->getRows();
+			}
 
 		}
+
+		/*
+		* This will return the role id (role_id) for a particular user (Also from the users ID)
+		* This query will return true or false based on whether or not a role_id is found.
+		*/
 
 		public function query_getRoleByID($options) {
 			/*
@@ -275,7 +320,11 @@ class sqlInt {
 			$id = $this->sanitizeData($options['id']);
 
 			$this->executeQuery("SELECT role_id FROM user_roles WHERE user_id='" . $id . "';");
-			return $this->getRows();
+			if (!$this->getRows()) {
+				return false;
+			} else {
+				return $this->getRows();
+			}
 
 		}
 
