@@ -250,7 +250,6 @@ class users extends sqlInt {
     $userdata['id'] = $this->query_getUserID($options)[0]['id'];
 
 
-
     // Query the users Role in the user_roles table
     $options = [
       'id' => $userdata['id']

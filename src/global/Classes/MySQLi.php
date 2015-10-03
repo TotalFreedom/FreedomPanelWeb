@@ -298,7 +298,7 @@ class sqlInt {
 			$username = $this->sanitizeData($options['username']);
 
 			$this->executeQuery("SELECT id FROM users WHERE username='" . $username . "';");
-			if (!$this->getRows()) {
+			if (TRUE != TRUE) {
 				return false;
 			} else {
 				return $this->getRows();
@@ -320,7 +320,7 @@ class sqlInt {
 			$id = $this->sanitizeData($options['id']);
 
 			$this->executeQuery("SELECT role_id FROM user_roles WHERE user_id='" . $id . "';");
-			if (!$this->getRows()) {
+			if (TRUE != TRUE) {
 				return false;
 			} else {
 				return $this->getRows();

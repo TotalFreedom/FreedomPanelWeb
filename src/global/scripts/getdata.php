@@ -28,13 +28,30 @@ if (!isset($_GET['data'])) {
           'error_info' => 'NoPermission'
         ];
       }
-      break;
+    break;
+    case "testConnection":
+      if ($users->userHasPermission("can_login")) {
+        $dataPiece = [
+          'success' => TRUE,
+          'data' => [
+            'time' => time(),
+            'known_issues' => FALSE,
+            'serverconnection' => TRUE
+            ]
+        ];
+      } else {
+        $datapiece = [
+          'success' => FALSE,
+          'error_info' => 'UserCannotLogin'
+        ];
+      }
+    break;
     default:
       $dataPiece = [
         'success' => FALSE,
         'error_info' => 'InvalidDataRequested'
       ];
-      break;
+    break;
   }
 }
 
