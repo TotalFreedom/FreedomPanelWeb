@@ -34,7 +34,7 @@ $powerControls
     <h3 class="panel-title"><i class="fa fa-terminal"></i>&nbsp;&nbsp;Console</h3>
   </div>
   <div class="panel-body">
-  <textarea class="form-control" rows="15">
+  <textarea class="form-control" id='consoleBox' rows="15">
   </textarea>
   <form class="form-inline">
   <div class="form-group" >
