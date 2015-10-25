@@ -1,5 +1,4 @@
 <?php
-sleep(3);
 require_once('../global.php');
 header('Content-type: application/json');
 // Check an action is given.

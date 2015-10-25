@@ -70,7 +70,36 @@ function setLoadingSpinnerState(state) {
 }
 
 
+function changePassword() {
 
+  var currentPassword = document.getElementById('currentPassword').value;
+  var newPassword = document.getElementById('newPassword').value;
+  var newPasswordConfirm = document.getElementById('newPasswordConfirm').value;
+
+  if (newPassword != newPasswordConfirm) {
+    document.getElementById('passwordErrorText').innerHTML='Confirmation password doesnt match.';
+    document.getElementById('passwordError').style.display='inline';
+    return;
+  }
+  if (newPassword == '') {
+    document.getElementById('passwordErrorText').innerHTML='Please enter a password';
+    document.getElementById('passwordError').style.display='inline';
+    return;
+  }
+  setLoadingSpinnerState(true);
+  $.post( "global/scripts/useractions.php?action=change_password", {current: currentPassword, new_password: newPassword})
+  .done(function(data) {
+    setLoadingSpinnerState(false);
+    console.log(data.success);
+    if (data.success == true) {
+      alert('Password Changed');
+    } else {
+      document.getElementById('passwordErrorText').innerHTML = data;
+      document.getElementById('passwordError').style.display='inline';
+      console.log('An error occured' + data);
+    }
+  });
+}
 
 
 

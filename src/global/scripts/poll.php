@@ -75,7 +75,7 @@ if ($users->userHasPermission('access_logs') && isset($_GET['onehundred_log_line
 }
 
 if ($users->userHasPermission('access_logs') && isset($_GET['onethousand_log_lines']) && $_GET['onethousand_log_lines'] == TRUE) {
-  $pollingResponse['onethousand_log_lines'] = '';
+  $pollingResponse['onethousand_log_lines'] = 'MAKE THIS PULL LOGS FROM SOMEWHERE ELSE NOT FROM THE POLL SCRIPT';
 }
 
 if ($users->userHasPermission('access_logs') && isset($_GET['tenthousand_log_lines']) && $_GET['tenthousand_log_lines'] == TRUE) {

@@ -11,7 +11,7 @@ if (!$panel->userHasPermission('access_logs')) {
 $content = <<<EOF
 
 
-<textarea class="form-control" rows="15">
+<textarea id='logs' class="form-control" rows="15">
 
 </textarea>
 
@@ -35,7 +35,7 @@ $content = <<<EOF
                <span class="input-group-addon">KBytes</span>
                <input type="text" id="kbytes" value="64" class="form-control ">
                <span class="input-group-btn">
-               <button class="btn btn-primary" onclick="event.preventDefault(); getLogs();">Update Logs</button>
+               <button class="btn btn-primary" onclick="event.preventDefault(); loadLogs();">Update Logs</button>
                </span>
             </div>
             </p>

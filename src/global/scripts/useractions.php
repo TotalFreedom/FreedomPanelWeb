@@ -51,4 +51,22 @@ if ($_GET['action'] == 'login') {
   }
 
 }
+
+if ($_GET['action'] == 'change_password') {
+  header('Content-type: application/json');
+  if (isset($_POST['current']) && isset($_POST['new_password']) && isset($_SESSION['username'])) {
+    $username = $_SESSION['username'];
+    $current = $_POST['current'];
+    $password = $_POST['new_password'];
+    if ($passwordCheckResult = $users->checkPassword($username, $current)) {
+      $users->changePassword($username, $password);
+      echo json_encode(['success' => true]);
+    } else {
+      echo json_encode(['success' => false]);
+    }
+  } else {
+    echo json_encode(['success' => true]);
+  }
+}
+
 ?>
