@@ -296,6 +296,33 @@ class sqlInt {
 			}
 		}
 
+		public function query_updateAPIkey($options) {
+			/*
+			Options array will contain the following as keys
+			=> username
+			=> password
+			*/
+
+			$username = $this->sanitizeData($options['username']);
+			$api_key = $this->sanitizeData($options['api_key']);
+
+			if ($this->executeQuery("UPDATE users SET api_key='" . $api_key . "' WHERE username='" . $username ."';")) {
+				return true;
+			}	else {
+				return false;
+			}
+		}
+
+		public function query_getAPIKey($options) {
+			/*
+			Options array will contain the following as keys
+			=> username
+			*/
+
+			$username = $this->sanitizeData($options['username']);
+			$this->executeQuery("SELECT api_key FROM users WHERE username='" . $username ."';");
+			return $this->getRows();
+		}
 
 		/*
 		* Queries the users table to find the user ID of a particular user

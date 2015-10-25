@@ -69,4 +69,10 @@ if ($_GET['action'] == 'change_password') {
   }
 }
 
+if ($_GET['action'] == 'generate_new_api_key') {
+    header('Content-type: application/json');
+    $users->generateAPIkey($_SESSION['username']);
+    echo json_encode(['success' => true]);
+}
+
 ?>

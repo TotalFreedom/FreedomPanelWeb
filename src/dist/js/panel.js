@@ -92,7 +92,7 @@ function changePassword() {
     setLoadingSpinnerState(false);
     console.log(data.success);
     if (data.success == true) {
-      alert('Password Changed');
+      window.location.replace('global/scripts/useractions.php?action=logout');
     } else {
       document.getElementById('passwordErrorText').innerHTML = data;
       document.getElementById('passwordError').style.display='inline';
@@ -101,6 +101,29 @@ function changePassword() {
   });
 }
 
+function generateNewAPIKey() {
+  setLoadingSpinnerState(true);
+  $.post( "global/scripts/useractions.php?action=generate_new_api_key", {place: ''})
+  .done(function(data) {
+    setLoadingSpinnerState(false);
+    console.log(data.success);
+    if (data.success == true) {
+      window.location.replace('global/scripts/useractions.php?action=logout');
+    } else {
+      console.log('An error occured' + data);
+    }
+})
+}
+
+function toggleAPIKeyVisibility() {
+  if (document.getElementById('api_key_box')) {
+    if (document.getElementById('api_key_box').type == 'password') {
+      document.getElementById('api_key_box').type = 'text'
+    } else {
+      document.getElementById('api_key_box').type = 'password'
+    }
+  }
+}
 
 
 

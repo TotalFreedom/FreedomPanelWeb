@@ -114,6 +114,36 @@ class users extends sqlInt {
 
   }
 
+
+ public function generateAPIkey($username) {
+   $rand = openssl_random_pseudo_bytes(2048);
+   $apikey = $rand;
+   $i = 0;
+   while ($i <= 300) {
+      $apikey = hash('whirlpool', $apikey);
+      $apikey = hash('whirlpool', $apikey);
+      $apikey = hash('whirlpool', $apikey);
+      $apikey = hash('sha512', $apikey);
+      $i++;
+   }
+   $apikey = hash('ripemd256', $apikey);
+   $options = [
+     'username' => $username,
+     'api_key' => $apikey
+   ];
+   $this->query_updateAPIkey($options);
+
+ }
+
+ public function getAPIKey($username) {
+   $options = [
+     'username' => $username
+   ];
+
+   $api_key = $this->query_getAPIKey($options)[0]['api_key'];
+   return $api_key;
+ }
+
   // User Creation / Deletion Functions
   public function createUser($username, $password, $role) {
 
@@ -133,6 +163,7 @@ class users extends sqlInt {
         'role_id' => $role_id
       ];
       $this->query_insertRole($options);
+      $this->generateAPIkey($username);
       return true;
     } else {
         $error = array (
@@ -189,7 +220,7 @@ class users extends sqlInt {
   }
 
   public function changePassword($username, $password) {
-
+    $this->generateAPIKey($username);
     $password = $this->hashPassword($password);
 
     $options = [
@@ -207,6 +238,8 @@ class users extends sqlInt {
           setCookie("remember", $loginTokens['token'], $loginTokens['validUntil'], '/');
         }
 
+        $apikey = $this->getAPIKey($username);
+        $_SESSION['API_KEY'] = $apikey;
         $_SESSION['is_logged_in'] = TRUE;
         $_SESSION['username'] = $username;
         header('Location: ' . $this->_config['root_dir_url'] . '/index.php');
