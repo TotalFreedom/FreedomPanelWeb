@@ -115,18 +115,24 @@ class users extends sqlInt {
   }
 
   // User Creation / Deletion Functions
-  public function createUser($username, $password) {
+  public function createUser($username, $password, $role) {
 
     $password = $this->hashPassword($password);
-
+    $role_id = $this->query_getRoleId(['role_name' => $role])[0]['role_id'];
     $options = [
       'username' => $username,
       'password' => $password,
+      'role' => $role_id
     ];
-
     $this->query_userExists($options['username']);
     if (!$this->getRows()) {
       $this->query_insertUser($options);
+
+      $options = [
+        'user_id' => $this->query_getUserID($options)[0]['id'],
+        'role_id' => $role_id
+      ];
+      $this->query_insertRole($options);
       return true;
     } else {
         $error = array (
@@ -144,7 +150,12 @@ class users extends sqlInt {
     $this->query_userExists($options['username']);
 
     if ($this->getRows()) {
+      $user_id = $this->query_getUserID($options)[0]['id'];
+      $options = [
+        'user_id' => $user_id
+      ];
       $this->query_deleteUser($options);
+      $this->query_deleteUserRoles($options);
       return true;
     } else {
         $error = array (
@@ -156,6 +167,26 @@ class users extends sqlInt {
   }
 
   // Account management Functions
+
+  public function changeRole($username, $role) {
+
+
+    $options = [
+      'username' => $username,
+      'role_name' => $role
+    ];
+    $user_id = $this->query_getUserID($options)[0]['id'];
+    $role_id = $this->query_getRoleID($options)[0]['role_id'];
+
+    $options = NULL;
+    $options = [
+      'username' => $user_id,
+      'role' => $role_id
+    ];
+
+    $response = $this->query_updateRole($options);
+
+  }
 
   public function changePassword($username, $password) {
 

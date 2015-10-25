@@ -4,29 +4,17 @@
 
 require_once('../global.php');
 
-
 if (!isset($_GET['data'])) {
-  $dataPiece = [
-    'success' => FALSE,
-    'error_info' => 'NoDataRequested'
-  ];
+  $dataPiece = $panel->generateError('41');
 } else {
   switch ($_GET['data']) {
     case "logs":
       // Check if user has permission to access this
       if ($users->userHasPermission('access_logs')) {
-        $dataPiece = [
-          'success' => TRUE,
-          'data' => [
-            'name' => 'logs',
-            'value' => $panel->getLogs()
-            ]
-        ];
+        $dataPiece = $panel->getLogs();
+
       } else {
-        $dataPiece = [
-          'success' => FALSE,
-          'error_info' => 'NoPermission'
-        ];
+        $dataPiece = $panel->generateError('11');
       }
     break;
     case "testConnection":
@@ -40,21 +28,15 @@ if (!isset($_GET['data'])) {
             ]
         ];
       } else {
-        $datapiece = [
-          'success' => FALSE,
-          'error_info' => 'UserCannotLogin'
-        ];
+        $dataPiece = $panel->generateError('11');
       }
     break;
     default:
-      $dataPiece = [
-        'success' => FALSE,
-        'error_info' => 'InvalidDataRequested'
-      ];
+      $dataPiece = $panel->generateError('41', ['RequestedData' => $_GET['data'], 'UserAgent' => $_SERVER['HTTP_USER_AGENT']]);
     break;
   }
 }
-
+header('Content-type: application/json');
 echo json_encode($dataPiece);
 
 ?>

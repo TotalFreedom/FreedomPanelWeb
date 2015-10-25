@@ -45,6 +45,7 @@ if ($_GET['action'] == 'login') {
     $users->login($username, $remember);
   } else {
     header('Location: ../../pages/login.php?incorrect=true');
+    $panel->generateError('15', ['Username' => $username, 'User_Agent' => $_SERVER['HTTP_USER_AGENT']]);
     echo 'Username or password incorrect';
     die();
   }

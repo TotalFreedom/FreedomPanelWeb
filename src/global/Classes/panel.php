@@ -3,14 +3,53 @@ class panel extends users {
 
   public $_pageContent;
   public $config;
+  public $_api;
 
   public function __construct($config) {
     $this->config = $config;
+    $this->_api = new api($config);
     $this->newConnection(SQL_SERVER, SQL_USERNAME, SQL_PASSWORD, SQL_DATABASE);
   }
 
   public function init() {
     $this->_pageContent = file_get_contents('pages/pageparts/template.html');
+  }
+
+  public function generateError($id, $additionalInfo = "NONE") {
+    $error_codes = JSON_DECODE(ERROR_IDS, true);
+    if (isset($error_codes[$id])) {
+      $human_error = $error_codes[$id]['Summary'];
+      $human_solution = $error_codes[$id]['Solution'];
+    } else {
+      $human_error = 'Error is not a known error';
+      $human_solution = 'Please contact a webmaster quoting error ' . $id;
+    }
+
+    if (isset($_SESSION['username'])) {
+      $username = $_SESSION['username'];
+    } else {
+      $username = 'NULL';
+    }
+
+    $response = [
+      'status' => FALSE,
+      'error_code' => $id,
+      'human_error' => $human_error,
+      'human_solution' => $human_solution
+    ];
+
+    $mysql_options = [
+      'error_id' => $id,
+      'human_error' => $human_error,
+      'time' => time(),
+      'ip_address' => $_SERVER['REMOTE_ADDR'],
+      'username' => $username,
+      'additional_info' => json_encode($additionalInfo)
+    ];
+    $this->query_logError($mysql_options);
+
+    return $response;
+
   }
 
   public function pageContent() {
@@ -129,17 +168,6 @@ class panel extends users {
 
   }
 
-  public function getLogs() {
-    // For now this will just retrieve them from a DB Cache - this will need to interface with the backend
-
-    if ($this->checkCacheValidity('log_data')) {
-      $data = $this->retrieveFromCache('log_data');
-    } else {
-      //$data = $this->backend_downloadLatestLog(); ENABLE THIS WHEN THE BACKEND HAS BEEN WRITTEN
-    }
-
-    return $data;
-  }
 
   public function getMaps($name) {
     $options = [
@@ -181,6 +209,78 @@ class panel extends users {
     }
 
     return $roles;
+  }
+
+
+/* Communication with API goes here */
+
+  public function getLogs() {
+    $options = [
+      'location' => 'logs',
+      'data' => ['history' => 30]
+      ];
+    $data = $this->_api->postToAPI($options);
+    //$response = $data[]
+    return $data;
+  }
+
+  public function server_startServer() {
+    $options = [
+      'location' => 'start',
+      'data' => []
+      ];
+    $data = $this->_api->postToAPI($options);
+  }
+
+  public function server_stopServer() {
+    $options = [
+      'location' => 'stop',
+      'data' => []
+      ];
+    $data = $this->_api->postToAPI($options);
+  }
+
+  public function server_restartServer() {
+    $options = [
+      'location' => 'stop',
+      'data' => []
+      ];
+    $data = $this->_api->postToAPI($options);
+
+    $options = [
+      'location' => 'start',
+      'data' => []
+      ];
+    $data = $this->_api->postToAPI($options);
+  }
+
+  public function server_sendCommand($commoptions) {
+
+    $options = [
+      'location' => 'command',
+      'data' => ['command' => $commoptions['command']] // I may need to add sanitization here.
+      ];
+    $data = $this->_api->postToAPI($options);
+  }
+
+  public function server_getStatus() {
+
+  }
+
+  public function server_listUsers() {
+    $options = [
+      'location' => 'list',
+      'data' => []
+      ];
+    $data = $this->_api->postToAPI($options);
+  }
+
+  public function server_getRawLogs() {
+    $options = [
+      'location' => 'logs_raw',
+      'data' => []
+      ];
+    $data = $this->_api->postToAPI($options);
   }
 
 }

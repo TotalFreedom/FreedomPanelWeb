@@ -250,15 +250,29 @@ class sqlInt {
 			Options array will contain the following as keys
 			=> username
 			*/
-			$username = $this->sanitizeData($options['username']);
 
-			if ($this->executeQuery("DELETE FROM users WHERE username='" . $options['username'] ."'")) {
+			$user_id = $this->sanitizeData($options['user_id']);
+
+			if ($this->executeQuery("DELETE FROM users WHERE id='" . $user_id ."'")) {
 				return true;
 			} else {
 				return false;
 			}
 		}
 
+		public function query_deleteUserRoles($options) {
+			/*
+			Options array will contain the following as keys
+			=> user_id
+			*/
+			$user_id = $this->sanitizeData($options['user_id']);
+
+			if ($this->executeQuery("DELETE FROM user_roles WHERE user_id='" . $user_id ."'")) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 		/*
 		* When a username is given, this query will change the password value associated with said
 		* username. This function returns true or false on success or failiure of the query
@@ -346,6 +360,19 @@ class sqlInt {
 
 		}
 
+		public function query_getRoleID($options) {
+			/*
+			Options array will contain the following as keys
+			=> role_name
+			*/
+
+				$role_name = $this->sanitizeData($options['role_name']);
+				$this->executeQuery("SELECT role_id FROM roles WHERE role_name='" . $role_name . "';");
+
+
+			return $this->getRows();
+
+		}
 
 		// Login Token Queries
 
@@ -425,6 +452,35 @@ class sqlInt {
 			return $this->getRows();
 		}
 
+		public function query_updateRole($options) {
+			/*
+			Options will contain the following keys in an array
+			'username' => The ID of the role to get permissions for
+			'role' => The ID of the role that is to be assigned
+			*/
+
+			$user_id = $this->sanitizeData($options['username']);
+			$role_id = $this->sanitizeData($options['role']);
+
+			$result = $this->executeQuery("UPDATE user_roles SET role_id = '" . $role_id . "' WHERE user_id = '" . $user_id . "'");
+			return $result;
+		}
+
+		public function query_insertRole($options) {
+			/*
+			Options will contain the following keys in an array
+			'username' => The ID of the role to get permissions for
+			'role' => The ID of the role that is to be assigned
+			*/
+
+			$user_id = $this->sanitizeData($options['user_id']);
+			$role_id = $this->sanitizeData($options['role_id']);
+
+			$result = $this->executeQuery("INSERT INTO user_roles (user_id, role_id) VALUES ('" . $user_id . "', '" . $role_id . "')");
+			return $result;
+		}
+
+
 		public function query_addToCache($options) {
 			/*
 			Options will contain the following keys in an array
@@ -498,6 +554,28 @@ class sqlInt {
 		public function query_listUsers() {
 			$this->executeQuery("SELECT id, username FROM users");
 			return $this->getRows();
+		}
+
+		public function query_logError($options) {
+			/*
+			'error_id' => $id,
+      'human_error' => $human_error,
+      'time' => time(),
+			'ip_address' => $_SERVER['REMOTE_ADDR'],
+			'username' => $username,
+      'additional_info' = $additionalInfo
+			*/
+			$error_id = $this->sanitizeData($options['error_id']);
+			$human_error = $this->sanitizeData($options['human_error']);
+			$time = $this->sanitizeData($options['time']);
+			$additional_info = $this->sanitizeData($options['additional_info']);
+			$ip_address = $this->sanitizeData($options['ip_address']);
+			$username = $this->sanitizeData($options['username']);
+
+			$this->executeQuery("INSERT INTO error_logging (error_time, error_id, error_human, additional_info, ip_address, username) VALUES ('" . $time . "', '" . $error_id . "', '" . $human_error . "', '" . $additional_info . "', '" .  $ip_address. "', '" . $username . "')");
+
+			// Dont return any errors, this function should remain silent
+			return;
 		}
 
 }

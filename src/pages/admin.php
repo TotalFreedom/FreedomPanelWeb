@@ -26,7 +26,7 @@ foreach ($userInformation as &$user) {
   $tableOutput .= '
   <tr>
           <th scope="row">' . $user['id'] . '</th>
-          <td><input type="text" class="form-control" placeholder="Username" value="' . $user['username'] . '"></td>
+          <td><input type="text" disabled class="form-control" placeholder="Username" value="' . $user['username'] . '"></td>
           <td><input type="password" class="form-control" placeholder="Change Password" value="Placeholder"></td>
           <td><select class="form-control">' . $userRanks . '</select></td>
           <td><button type="submit" class="btn btn-danger">Delete</button>&nbsp;<button type="submit" class="btn btn-primary">Save</button></td>
