@@ -76,6 +76,10 @@ $error_ids = [
     'Solution' => ''
   ],
 
+  '62' => [
+    'Summary' => 'API Access is disabled.',
+    'Solution' => 'Please contact the server administrator if you believe this is in error'
+  ],
   // CURL / API Errors
 
   '200' => [

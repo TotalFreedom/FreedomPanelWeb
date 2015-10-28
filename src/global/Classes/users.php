@@ -230,7 +230,7 @@ class users extends sqlInt {
     $this->query_changePassword($options);
   }
 
-  public function login($username, $remember = false) {
+  public function login($username, $remember = false, $addredirect = true) {
 
         // If remember me is true, generate a token and store as a cookie
         if ($remember == true) {
@@ -242,7 +242,9 @@ class users extends sqlInt {
         $_SESSION['API_KEY'] = $apikey;
         $_SESSION['is_logged_in'] = TRUE;
         $_SESSION['username'] = $username;
-        header('Location: ' . $this->_config['root_dir_url'] . '/index.php');
+        if ($addredirect == true) {
+          header('Location: ' . $this->_config['root_dir_url'] . '/index.php');
+        }
   }
 
   public function logout($message = NULL) {

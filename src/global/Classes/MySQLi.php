@@ -324,6 +324,17 @@ class sqlInt {
 			return $this->getRows();
 		}
 
+		public function query_getUserFromAPIKey($options) {
+			/*
+			Options array will contain the following as keys
+			=> api_key
+			*/
+
+			$api_key = $this->sanitizeData($options['api_key']);
+			$this->executeQuery("SELECT username FROM users WHERE api_key='" . $api_key ."';");
+			return $this->getRows();
+		}
+
 		/*
 		* Queries the users table to find the user ID of a particular user
 		* Returns either true or false as to whether or not an ID is found for said
