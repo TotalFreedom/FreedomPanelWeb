@@ -1,5 +1,0 @@
-<?php
-public class session() {
-  
-}
-?>
